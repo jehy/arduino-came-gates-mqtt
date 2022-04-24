@@ -16,7 +16,9 @@ switch:
   - platform: mqtt
     unique_id: gates_btn
     name: "Gates Switch"
-    command_topic: "esp/street/gates"
+    command_topic: "esp/street/gates/open"
+    availability:
+      - topic: "esp/street/gates/available"
     qos: 0
     retain: false
 ```

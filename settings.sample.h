@@ -4,8 +4,10 @@
 #define MQTT_USER ""
 #define MQTT_PASSWORD ""
 
-#define GATES_TOPIC "esp/street/gates"
-#define GATES_CODE "AABBCC"
+#define GATES_TOPIC_OPEN "esp/street/gates/open"
+#define GATES_TOPIC_AVAILABLE "esp/street/gates/available"
+
+#define GATES_CODE "110011910110100011101010"
 #define TRANSMITTER_PIN DAC1
 
 // WIFI settings

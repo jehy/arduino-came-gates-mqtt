@@ -14,6 +14,8 @@ WiFiMulti wifiMulti;
 
 #include "settings.h"
 
+long previousMillisSend = 0;
+
 void setup() {
 
   Serial.begin(115200);
@@ -22,7 +24,8 @@ void setup() {
   Serial.println("Setup started");
   WiFi.mode(WIFI_STA); //be only wifi client, not station
 
-  WiFiUtils::printNetworks();
+
+  //WiFiUtils::printNetworks();
   WiFi.hostname("Gate_Opener");
 
   wifiMulti.addAP(WIFI_SSID, WIFI_PASS);
@@ -38,6 +41,7 @@ void setup() {
   WiFiUtils::printWiFiStatus();
   WiFiUtils::printCurrentNet();
   WiFiUtils::printWifiData();
+
 
   mqttClient.setServer(MQTT_SERVER, MQTT_PORT);
   mqttClient.setCallback(callback);
@@ -61,22 +65,29 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
 void loop()
 {
-
   bool connected = true;
   if (!mqttClient.connected()) {
     connected = false;
-    if (mqttClient.connect("Arduino-Gates")) {
+    if (mqttClient.connect("ArduinoGates")) {
       Serial.println("MQTT reconnected");
       connected = true;
-      mqttClient.subscribe(GATES_TOPIC);
+      mqttClient.subscribe(GATES_TOPIC_OPEN);
     } else {
       connected = false;
       Serial.print("MQTT failed, rc=");
-      Serial.print(mqttClient.state());
+      Serial.println(mqttClient.state());
+      delay(3000);
     }
   }
-
+  if (connected) {
+    unsigned long currentMillis = millis();
+    if (previousMillisSend == 0 || ((currentMillis - previousMillisSend) > 120 * 1000)) {
+      previousMillisSend = currentMillis;
+      mqttClient.publish(GATES_TOPIC_AVAILABLE, "online", false);
+    }
+  }
   mqttClient.loop();
+  //delay(100);
 }
 
 void SendCameBit(byte b)
