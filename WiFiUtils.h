@@ -1,6 +1,49 @@
+
+
+#if defined(ESP32)
+#include "WiFi.h"
+#include <WiFiMulti.h>
+WiFiMulti wifiMulti;
+#endif
+
+#if defined(ESP8266)
+#include <ESP8266WiFi.h>
+#include <WiFiClient.h>
+
+#endif
 class WiFiUtils
 {
   public:
+    static bool connect(char* ssid, char* pass, int maxAttempts = 0) {
+      unsigned int attempt = 0;
+#if defined(ESP32)
+      wifiMulti.addAP(ssid, pass);
+      while (wifiMulti.run() != WL_CONNECTED)
+      {
+        if (attempt >= 65535)
+          attempt = 0;
+        attempt++;
+        Serial.print("Attempting to connect to WPA SSID: ");
+        Serial.println(ssid);
+        delay(3000);
+      }
+#endif
+
+
+#if defined(ESP8266)
+      while (WiFi.status() != WL_CONNECTED)
+      {
+        if (attempt >= 65535)
+          attempt = 0;
+        attempt++;
+        Serial.print("Attempting to connect to WPA SSID: ");
+        Serial.println(ssid);
+        // Connect to WPA/WPA2 network:
+        WiFi.begin(ssid, pass);
+        delay(10000);
+      }
+#endif
+    }
     static void macStr(char* buffer)
     {
       byte mac[6];
@@ -11,17 +54,23 @@ class WiFiUtils
     {
       IPAddress googleDNS(8, 8, 8, 8);
       if (!ipCmp(WiFi.dnsIP(), googleDNS))
+      {
         WiFi.config(WiFi.localIP(), WiFi.gatewayIP(), WiFi.subnetMask(), googleDNS);
+      }
     }
     static bool ipCmp(IPAddress ip1, IPAddress ip2)
     {
       for (int i = 0; i < 4; i++)
-        if (ip1[i] != ip2[i])
+      {
+        if (ip1[i] != ip2[i]){
           return false;
+        }
+      }
       return true;
     }
     static void checkReconnect(char *ssid, char *pass, int max_attempts = 0)
     {
+#if defined(ESP8266)
       long previousMillis = 0;
       long interval = 10000;
       unsigned long currentMillis = millis();
@@ -42,6 +91,7 @@ class WiFiUtils
         // Connect to WPA/WPA2 network:
         WiFi.begin(ssid, pass);
       }
+#endif
     }
 
     static void printWifiData()
