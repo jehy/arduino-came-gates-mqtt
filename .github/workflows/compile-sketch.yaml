@@ -16,13 +16,28 @@ jobs:
         run: |
           cp settings.sample.h settings.h
 
-      - name: Compile sketch
+      - name: Compile sketch esp32
         uses: arduino/compile-sketches@v1
         with:
           fqbn: esp32:esp32:esp32
           platforms: |
             - name: esp32:esp32
               source-url: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+          sketch-paths: |
+            - ./
+          libraries: |
+            - name: PubSubClient
+              version: 2.8.0
+
+      - name: Compile sketch esp8266
+        uses: arduino/compile-sketches@v1
+        with:
+          fqbn: esp8266:esp8266:d1
+          platforms: |
+            # Install ESP8266 platform via Boards Manager
+            - name: esp8266:esp8266
+              source-url: https://arduino.esp8266.com/stable/package_esp8266com_index.json
+              version: 2.5.0
           sketch-paths: |
             - ./
           libraries: |

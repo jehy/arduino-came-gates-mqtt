@@ -2,15 +2,11 @@
 
 #include <PubSubClient.h>
 
-#include "WiFi.h"
-#include <WiFiMulti.h>
-
 #include "WiFiUtils.h"
 
 WiFiClient client;
 PubSubClient mqttClient(client);
 WiFiUtils wifiUtils;
-WiFiMulti wifiMulti;
 
 #include "settings.h"
 
@@ -27,14 +23,7 @@ void setup() {
 
   //WiFiUtils::printNetworks();
   WiFi.hostname("Gate_Opener");
-
-  wifiMulti.addAP(WIFI_SSID, WIFI_PASS);
-  while (wifiMulti.run() != WL_CONNECTED)
-  {
-    Serial.print("Attempting to connect to WPA SSID: ");
-    Serial.println(WIFI_SSID);
-    delay(3000);
-  }
+  WiFiUtils::connect(WIFI_SSID, WIFI_PASS);
 
   if (USE_GOOGLE_DNS)
     WiFiUtils::setGoogleDNS();
