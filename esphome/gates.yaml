@@ -1,0 +1,15 @@
+esphome:
+  name: gates-switch
+  includes:
+    - arduino-came-gates-mqtt/esphome/settings.h
+    - arduino-came-gates-mqtt/esphome/gatesSwitch.h
+
+switch:
+- platform: custom
+  lambda: |-
+    auto my_custom_switch = new GatesSwitch();
+    App.register_component(my_custom_switch);
+    return {my_custom_switch};
+
+  switches:
+    name: "Gates Switch"
