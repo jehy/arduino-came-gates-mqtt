@@ -22,3 +22,8 @@ switch:
     qos: 0
     retain: false
 ```
+
+# ESPHome
+ESPHome version can be found in `esphome` directory.
+
+Just copy `esphome/settings.sample.h` to `esphome/settings.h`, tweak it and you are ready for upload :) 
