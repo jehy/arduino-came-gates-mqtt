@@ -24,6 +24,4 @@ switch:
 ```
 
 # ESPHome
-ESPHome version can be found in `esphome` directory.
-
-Just copy `esphome/settings.sample.h` to `esphome/settings.h`, tweak it and you are ready for upload :) 
+ESPHome version can be found [here](https://github.com/jehy/esphome/tree/master/came-gates-controller).
